@@ -22,9 +22,8 @@ public abstract class BaseTest {
 
     @BeforeEach
     public void setup() {
-        // Opções para rodar o Chrome em modo "headless" (sem interface gráfica), ideal para automação.
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
+        // options.addArguments("--headless"); # vizualizar rodando
         options.addArguments("--disable-gpu");
         options.addArguments("--window-size=1920,1200");
         options.addArguments("--ignore-certificate-errors");
@@ -32,7 +31,6 @@ public abstract class BaseTest {
         // Inicializa o driver do Chrome com as opções configuradas
         driver = new ChromeDriver(options);
 
-        // Define um tempo de espera implícito. O Selenium esperará até 10 segundos por um elemento antes de falhar.
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 
         // Navega para a URL da nossa aplicação

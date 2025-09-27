@@ -22,8 +22,8 @@ public class PessoaRepository {
         return INSTANCE;
     }
 
-    public Pessoa save(String nome, int idade) {
-        Pessoa pessoa = new Pessoa(proximoId++, nome, idade);
+    public Pessoa save(String nome, int idade, String email, String cpf) {
+        Pessoa pessoa = new Pessoa(proximoId++, nome, idade, email, cpf);
         pessoas.put(pessoa.getId(), pessoa);
         return pessoa;
     }
@@ -40,11 +40,11 @@ public class PessoaRepository {
         return pessoas.remove(id) != null;
     }
     
-    public Pessoa update(int id, String nome, int idade) {
+    public Pessoa update(int id, String nome, int idade, String email, String cpf) {
         if (!pessoas.containsKey(id)) {
             return null; // Ou lançar exceção
         }
-        Pessoa pessoaAtualizada = new Pessoa(id, nome, idade);
+        Pessoa pessoaAtualizada = new Pessoa(id, nome, idade, email, cpf);
         pessoas.put(id, pessoaAtualizada);
         return pessoaAtualizada;
     }

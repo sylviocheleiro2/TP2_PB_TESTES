@@ -1,51 +1,43 @@
 package br.com.infnet.service;
 
 import br.com.infnet.model.Pessoa;
-import java.util.*;
+import br.com.infnet.repository.PessoaRepository;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
- * Serviço responsável pelas operações CRUD de Pessoa.
+ * Serviço responsável pelas operações de negócio de Pessoa.
  */
 public class PessoaService {
-    private final Map<Integer, Pessoa> pessoas = new HashMap<>();
-    private int proximoId = 1;
 
-    // Cria uma nova pessoa
-    public Pessoa criarPessoa(String nome, int idade) {
-        Pessoa pessoa = new Pessoa(proximoId++, nome, idade);
-        pessoas.put(pessoa.getId(), pessoa);
-        return pessoa;
+    private final PessoaRepository pessoaRepository = PessoaRepository.getInstance();
+
+    public Pessoa criarPessoa(String nome, int idade, String email, String cpf) {
+        return pessoaRepository.save(nome, idade, email, cpf);
     }
 
-    // Consulta pessoa por ID
     public Pessoa consultarPessoa(int id) {
-        Pessoa pessoa = pessoas.get(id);
-        if (pessoa == null) {
-            throw new NoSuchElementException("Pessoa não encontrada.");
-        }
-        return pessoa;
+        return pessoaRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Pessoa não encontrada."));
     }
 
-    // Atualiza dados de uma pessoa
-    public Pessoa atualizarPessoa(int id, String nome, int idade) {
-        if (!pessoas.containsKey(id)) {
+    public Pessoa atualizarPessoa(int id, String nome, int idade, String email, String cpf) {
+        Pessoa pessoa = pessoaRepository.update(id, nome, idade, email, cpf);
+        if (pessoa == null) {
             throw new NoSuchElementException("Pessoa não encontrada para atualização.");
         }
-        Pessoa pessoaAtualizada = new Pessoa(id, nome, idade);
-        pessoas.put(id, pessoaAtualizada);
-        return pessoaAtualizada;
+        return pessoa;
     }
 
-    // Remove pessoa por ID
     public void removerPessoa(int id) {
-        if (pessoas.remove(id) == null) {
+        boolean removed = pessoaRepository.deleteById(id);
+        if (!removed) {
             throw new NoSuchElementException("Pessoa não encontrada para remoção.");
         }
     }
 
-    // Lista todas as pessoas
     public List<Pessoa> listarPessoas() {
-        return new ArrayList<>(pessoas.values());
+        return pessoaRepository.findAll();
     }
 }
-

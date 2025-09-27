@@ -47,9 +47,14 @@ async function handleListClick(event) {
 
 async function handleEditSubmit(event) {
     event.preventDefault();
-    const personData = ui.getEditFormData();
+    const personData = ui.getEditFormData(); // Pega todos os dados, incluindo o ID
+
+    // Separa o ID do resto dos dados que serão enviados no corpo da requisição
+    const { id, ...updateData } = personData;
+
     try {
-        const updatedPerson = await api.updatePessoa(personData.id, personData);
+        // Envia o ID na URL e o resto dos dados no corpo
+        const updatedPerson = await api.updatePessoa(id, updateData);
         ui.updatePessoaInList(updatedPerson);
         ui.closeEditModal();
     } catch (error) {
