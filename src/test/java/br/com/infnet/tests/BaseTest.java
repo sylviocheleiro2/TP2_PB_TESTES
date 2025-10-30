@@ -1,5 +1,6 @@
 package br.com.infnet.tests;
 
+import br.com.infnet.pages.LoginPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,8 +34,27 @@ public abstract class BaseTest {
 
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 
-        // Navega para a URL da nossa aplicação
-        driver.get("http://localhost:7070");
+        try {
+            LoginPage loginPage = new LoginPage(driver);
+            loginPage.realizarLogin("admin@example.com", "admin123");
+
+            // Verifica se o login foi bem-sucedido
+            if (!loginPage.isLoginSucesso()) {
+                String currentUrl = driver.getCurrentUrl();
+                throw new RuntimeException("Falha ao realizar login antes do teste. URL atual: " + currentUrl);
+            }
+        } catch (Exception e) {
+            if (driver != null) {
+                String pageSource = driver.getPageSource();
+                String currentUrl = driver.getCurrentUrl();
+                System.err.println("Erro durante o login:");
+                System.err.println("URL atual: " + currentUrl);
+                System.err.println("HTML da página:");
+                System.err.println(pageSource);
+                driver.quit();
+            }
+            throw new RuntimeException("Falha ao realizar login: " + e.getMessage(), e);
+        }
     }
 
     @AfterEach

@@ -8,24 +8,24 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
-public class PessoaPage {
+public class CadastroPage {
     private final WebDriver driver;
     private static final long SLEEP_TIME = 2000;
 
-    // Locators para a página de pessoas
+    // Atualizando os locators com os seletores corretos
     private final By nomeInput = By.id("nome");
     private final By idadeInput = By.id("idade");
     private final By emailInput = By.id("email");
     private final By cpfInput = By.id("cpf");
     private final By adicionarButton = By.cssSelector("button.btn-submit");
     private final By pessoaList = By.id("person-list");
-    private final By editarButton = By.cssSelector(".edit-button");
-    private final By removerButton = By.cssSelector(".delete-button");
+    private final By editarButton = By.cssSelector("button.btn-edit"); // Atualizado
+    private final By removerButton = By.cssSelector("button.btn-delete"); // Atualizado
 
-    public PessoaPage(WebDriver driver) {
+    public CadastroPage(WebDriver driver) {
         this.driver = driver;
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.urlContains("/pessoa.html"));
+        wait.until(ExpectedConditions.urlContains("/cadastro.html"));
     }
 
     public void preencherFormularioDeCadastro(String nome, String idade, String email, String cpf) {
@@ -48,7 +48,7 @@ public class PessoaPage {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.elementToBeClickable(adicionarButton)).click();
         try {
-            Thread.sleep(SLEEP_TIME); // Aguarda a atualização da lista
+            Thread.sleep(SLEEP_TIME);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -65,13 +65,23 @@ public class PessoaPage {
     }
 
     public void clicarEmEditarNaUltimaPessoa() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement ultimaPessoa = getUltimaPessoaDaLista();
-        ultimaPessoa.findElement(editarButton).click();
+        // Usando XPath fornecido
+        WebElement editarBtn = driver.findElement(By.xpath("//*[@id=\"person-list\"]/li[1]/div[2]/button[1]"));
+        wait.until(ExpectedConditions.elementToBeClickable(editarBtn)).click();
     }
 
     public void clicarEmRemoverNaUltimaPessoa() {
-        WebElement ultimaPessoa = getUltimaPessoaDaLista();
-        ultimaPessoa.findElement(removerButton).click();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        // Usando XPath fornecido para o botão remover
+        WebElement removerBtn = driver.findElement(By.xpath("//*[@id=\"person-list\"]/li[1]/div[2]/button[2]"));
+        wait.until(ExpectedConditions.elementToBeClickable(removerBtn)).click();
+        try {
+            Thread.sleep(SLEEP_TIME); // Aguarda o alerta aparecer
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public WebElement getEditModal() {

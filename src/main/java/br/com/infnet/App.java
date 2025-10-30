@@ -76,7 +76,12 @@ public class App {
             }
 
             log.info("Login bem-sucedido para {}", email);
-            ctx.status(HttpStatus.OK).json(java.util.Map.of("message", "Login efetuado com sucesso"));
+            ctx.header("Location", "/pessoa.html");
+            ctx.status(HttpStatus.OK)
+               .json(java.util.Map.of(
+                   "message", "Login efetuado com sucesso",
+                   "redirectTo", "/pessoa.html"  // Corrigido para redirecionar para pessoa.html
+               ));
         });
 
         log.info("Servidor rodando em http://localhost:7070");

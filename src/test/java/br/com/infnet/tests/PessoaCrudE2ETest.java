@@ -1,6 +1,6 @@
 package br.com.infnet.tests;
 
-import br.com.infnet.pages.PessoaPage;
+import br.com.infnet.pages.CadastroPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,19 +19,19 @@ public class PessoaCrudE2ETest extends BaseTest {
     @Test
     @DisplayName("Deve cadastrar uma nova pessoa com sucesso")
     public void deveCadastrarNovaPessoaComSucesso() {
-        PessoaPage pessoaPage = new PessoaPage(driver);
+        CadastroPage cadastroPage = new CadastroPage(driver);
         String nome = "Fulano de Tal";
         String idade = "30";
         String email = "fulano@teste.com";
         String cpf = "12345678901";
 
-        pessoaPage.preencherFormularioDeCadastro(nome, idade, email, cpf);
-        pessoaPage.clicarEmAdicionar();
+        cadastroPage.preencherFormularioDeCadastro(nome, idade, email, cpf);
+        cadastroPage.clicarEmAdicionar();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        wait.until(ExpectedConditions.visibilityOf(pessoaPage.getUltimaPessoaDaLista()));
+        wait.until(ExpectedConditions.visibilityOf(cadastroPage.getUltimaPessoaDaLista()));
 
-        String textoDoUltimoItem = pessoaPage.getTextoUltimaPessoaDaLista();
+        String textoDoUltimoItem = cadastroPage.getTextoUltimaPessoaDaLista();
         assertTrue(textoDoUltimoItem.contains(nome));
         assertTrue(textoDoUltimoItem.contains(email));
         assertTrue(textoDoUltimoItem.contains(cpf));
@@ -40,22 +40,22 @@ public class PessoaCrudE2ETest extends BaseTest {
     @Test
     @DisplayName("Deve editar uma pessoa com sucesso")
     public void deveEditarPessoaComSucesso() {
-        PessoaPage pessoaPage = new PessoaPage(driver);
-        pessoaPage.preencherFormularioDeCadastro("Pessoa Original", "25", "original@email.com", "11122233344");
-        pessoaPage.clicarEmAdicionar();
+        CadastroPage cadastroPage = new CadastroPage(driver);
+        cadastroPage.preencherFormularioDeCadastro("Pessoa Original", "25", "original@email.com", "11122233344");
+        cadastroPage.clicarEmAdicionar();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        wait.until(ExpectedConditions.visibilityOf(pessoaPage.getUltimaPessoaDaLista()));
+        wait.until(ExpectedConditions.visibilityOf(cadastroPage.getUltimaPessoaDaLista()));
 
-        pessoaPage.clicarEmEditarNaUltimaPessoa();
-        wait.until(ExpectedConditions.visibilityOf(pessoaPage.getEditModal()));
+        cadastroPage.clicarEmEditarNaUltimaPessoa();
+        wait.until(ExpectedConditions.visibilityOf(cadastroPage.getEditModal()));
 
         String nomeEditado = "Pessoa Editada";
         String emailEditado = "editado@email.com";
-        pessoaPage.preencherFormularioDeEdicao(nomeEditado, "35", emailEditado, "55566677788");
-        pessoaPage.clicarEmSalvar();
+        cadastroPage.preencherFormularioDeEdicao(nomeEditado, "35", emailEditado, "55566677788");
+        cadastroPage.clicarEmSalvar();
 
-        wait.until(ExpectedConditions.invisibilityOf(pessoaPage.getEditModal()));
-        String textoDoItemAtualizado = pessoaPage.getTextoUltimaPessoaDaLista();
+        wait.until(ExpectedConditions.invisibilityOf(cadastroPage.getEditModal()));
+        String textoDoItemAtualizado = cadastroPage.getTextoUltimaPessoaDaLista();
         assertTrue(textoDoItemAtualizado.contains(nomeEditado));
         assertTrue(textoDoItemAtualizado.contains(emailEditado));
     }
@@ -63,17 +63,17 @@ public class PessoaCrudE2ETest extends BaseTest {
     @Test
     @DisplayName("Deve remover uma pessoa com sucesso")
     public void deveRemoverPessoaComSucesso() {
-        PessoaPage pessoaPage = new PessoaPage(driver);
-        pessoaPage.preencherFormularioDeCadastro("Pessoa a Remover", "40", "remover@email.com", "99988877766");
-        pessoaPage.clicarEmAdicionar();
+        CadastroPage cadastroPage = new CadastroPage(driver);
+        cadastroPage.preencherFormularioDeCadastro("Pessoa a Remover", "40", "remover@email.com", "99988877766");
+        cadastroPage.clicarEmAdicionar();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        wait.until(ExpectedConditions.visibilityOf(pessoaPage.getUltimaPessoaDaLista()));
-        String textoPessoaRemovida = pessoaPage.getTextoUltimaPessoaDaLista();
+        wait.until(ExpectedConditions.visibilityOf(cadastroPage.getUltimaPessoaDaLista()));
+        String textoPessoaRemovida = cadastroPage.getTextoUltimaPessoaDaLista();
 
-        pessoaPage.clicarEmRemoverNaUltimaPessoa();
+        cadastroPage.clicarEmRemoverNaUltimaPessoa();
         driver.switchTo().alert().accept();
 
-        wait.until(ExpectedConditions.stalenessOf(pessoaPage.getUltimaPessoaDaLista()));
+        wait.until(ExpectedConditions.stalenessOf(cadastroPage.getUltimaPessoaDaLista()));
         assertFalse(driver.getPageSource().contains(textoPessoaRemovida), "A pessoa removida ainda foi encontrada na página.");
     }
 
@@ -89,16 +89,18 @@ public class PessoaCrudE2ETest extends BaseTest {
                                                                        String email,
                                                                        String cpf,
                                                                        String mensagemEsperada) {
-        PessoaPage pessoaPage = new PessoaPage(driver);
+        CadastroPage cadastroPage = new CadastroPage(driver);
 
-        pessoaPage.preencherFormularioDeCadastro(nome, idade, email, cpf);
-        pessoaPage.clicarEmAdicionar();
+        cadastroPage.preencherFormularioDeCadastro(nome, idade, email, cpf);
+        cadastroPage.clicarEmAdicionar();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         Alert alert = wait.until(ExpectedConditions.alertIsPresent());
         String alertText = alert.getText();
         alert.accept();
 
-        assertTrue(alertText.contains(mensagemEsperada), "A mensagem de erro do alerta não era a esperada.");
+        assertTrue(alertText.contains(mensagemEsperada),
+            String.format("Mensagem de erro esperada '%s' não encontrada em '%s'",
+                mensagemEsperada, alertText));
     }
 }
