@@ -2,8 +2,14 @@ const BASE_URL = '/api/pessoas';
 
 async function handleFetchResponse(response) {
     if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || `Erro ${response.status}`);
+        try {
+            const data = await response.json();
+            const msg = (data && (data.message || data.error || data.title)) || `Erro ${response.status}`;
+            throw new Error(msg);
+        } catch (_) {
+            const errorText = await response.text();
+            throw new Error(errorText || `Erro ${response.status}`);
+        }
     }
     return response.status === 204 ? null : response.json();
 }

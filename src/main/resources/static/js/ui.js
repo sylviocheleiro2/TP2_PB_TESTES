@@ -3,6 +3,34 @@ const personList = document.getElementById('person-list');
 const editModal = document.getElementById('edit-modal');
 const editForm = document.getElementById('edit-form');
 const closeModalButton = document.querySelector('.close-button');
+const appRoot = document.getElementById('app');
+
+// --- Notificações simples ---
+function ensureNoticeHost() {
+    let el = document.getElementById('notice');
+    if (!el && appRoot) {
+        el = document.createElement('div');
+        el.id = 'notice';
+        appRoot.prepend(el);
+    }
+    return el;
+}
+
+export function showNotice(type, message) {
+    const host = ensureNoticeHost();
+    if (!host) return;
+    host.className = `notice notice-${type}`; // success | error | warning
+    host.textContent = message || '';
+    host.style.display = 'block';
+}
+
+export function clearNotice() {
+    const host = ensureNoticeHost();
+    if (!host) return;
+    host.textContent = '';
+    host.className = 'notice';
+    host.style.display = 'none';
+}
 
 // --- Funções de Renderização ---
 
@@ -91,7 +119,9 @@ export function closeEditModal() {
 
 // --- Listeners Internos do UI ---
 
-closeModalButton.addEventListener('click', closeEditModal);
+if (closeModalButton) {
+    closeModalButton.addEventListener('click', closeEditModal);
+}
 window.addEventListener('click', event => {
     if (event.target === editModal) {
         closeEditModal();

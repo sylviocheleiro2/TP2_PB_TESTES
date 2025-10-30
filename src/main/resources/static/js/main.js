@@ -3,7 +3,7 @@ import * as ui from './ui.js';
 
 function handleError(error) {
     console.error('Ocorreu um erro:', error);
-    alert(`Erro: ${error.message}`);
+    ui.showNotice('error', error?.message || 'Ocorreu um erro inesperado.');
 }
 
 async function handleAddSubmit(event) {
@@ -13,6 +13,7 @@ async function handleAddSubmit(event) {
         const newPerson = await api.createPessoa(personData);
         ui.addPessoaToList(newPerson);
         ui.resetAddForm();
+        ui.showNotice('success', 'Pessoa adicionada com sucesso.');
     } catch (error) {
         handleError(error);
     }
@@ -29,6 +30,7 @@ async function handleListClick(event) {
             try {
                 await api.deletePessoa(id);
                 ui.removePessoaFromList(id);
+                ui.showNotice('success', 'Pessoa removida.');
             } catch (error) {
                 handleError(error);
             }
@@ -57,6 +59,7 @@ async function handleEditSubmit(event) {
         const updatedPerson = await api.updatePessoa(id, updateData);
         ui.updatePessoaInList(updatedPerson);
         ui.closeEditModal();
+        ui.showNotice('success', 'Pessoa atualizada.');
     } catch (error) {
         handleError(error);
     }
@@ -70,6 +73,7 @@ async function initializeApp() {
     try {
         const pessoas = await api.getPessoas();
         ui.renderPessoasList(pessoas);
+        ui.clearNotice();
     } catch (error) {
         handleError(error);
     }
