@@ -22,10 +22,10 @@ public class PessoaRepository {
         return INSTANCE;
     }
 
-    public Pessoa save(String nome, int idade, String email, String cpf) {
-        Pessoa pessoa = new Pessoa(proximoId++, nome, idade, email, cpf);
-        pessoas.put(pessoa.getId(), pessoa);
-        return pessoa;
+    public Pessoa save(Pessoa pessoa) {
+        Pessoa novaPessoa = new Pessoa(proximoId++, pessoa.getNome(), pessoa.getIdade(), pessoa.getEmail(), pessoa.getCpf());
+        pessoas.put(novaPessoa.getId(), novaPessoa);
+        return novaPessoa;
     }
 
     public Optional<Pessoa> findById(int id) {
@@ -40,12 +40,11 @@ public class PessoaRepository {
         return pessoas.remove(id) != null;
     }
     
-    public Pessoa update(int id, String nome, int idade, String email, String cpf) {
-        if (!pessoas.containsKey(id)) {
+    public Pessoa update(Pessoa pessoa) {
+        if (!pessoas.containsKey(pessoa.getId())) {
             return null; // Ou lançar exceção
         }
-        Pessoa pessoaAtualizada = new Pessoa(id, nome, idade, email, cpf);
-        pessoas.put(id, pessoaAtualizada);
-        return pessoaAtualizada;
+        pessoas.put(pessoa.getId(), pessoa);
+        return pessoa;
     }
 }

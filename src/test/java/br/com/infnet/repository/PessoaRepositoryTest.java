@@ -37,7 +37,8 @@ public class PessoaRepositoryTest {
     @Test
     @DisplayName("Deve salvar uma nova pessoa e atribuir um ID")
     void deveSalvarNovaPessoa() {
-        Pessoa pessoaSalva = repository.save("Nova Pessoa", 25, "nova@email.com", "11122233344");
+        Pessoa pessoa = new Pessoa(0, "Nova Pessoa", 25, "nova@email.com", "11122233344");
+        Pessoa pessoaSalva = repository.save(pessoa);
 
         assertNotNull(pessoaSalva);
         assertEquals(1, pessoaSalva.getId());
@@ -47,7 +48,7 @@ public class PessoaRepositoryTest {
     @Test
     @DisplayName("Deve encontrar uma pessoa pelo ID")
     void deveEncontrarPessoaPorId() {
-        repository.save("Pessoa Encontrada", 30, "encontrada@email.com", "22233344455");
+        repository.save(new Pessoa(0, "Pessoa Encontrada", 30, "encontrada@email.com", "22233344455"));
         Optional<Pessoa> pessoaOptional = repository.findById(1);
 
         assertTrue(pessoaOptional.isPresent());
@@ -64,8 +65,8 @@ public class PessoaRepositoryTest {
     @Test
     @DisplayName("Deve listar todas as pessoas")
     void deveListarTodasAsPessoas() {
-        repository.save("Pessoa 1", 20, "p1@email.com", "11111111111");
-        repository.save("Pessoa 2", 30, "p2@email.com", "22222222222");
+        repository.save(new Pessoa(0, "Pessoa 1", 20, "p1@email.com", "11111111111"));
+        repository.save(new Pessoa(0, "Pessoa 2", 30, "p2@email.com", "22222222222"));
 
         List<Pessoa> pessoas = repository.findAll();
 
@@ -75,8 +76,9 @@ public class PessoaRepositoryTest {
     @Test
     @DisplayName("Deve atualizar uma pessoa existente")
     void deveAtualizarPessoa() {
-        repository.save("Pessoa Original", 40, "original@email.com", "33344455566");
-        Pessoa pessoaAtualizada = repository.update(1, "Pessoa Atualizada", 41, "atualizado@email.com", "33344455567");
+        Pessoa pessoaSalva = repository.save(new Pessoa(0, "Pessoa Original", 40, "original@email.com", "33344455566"));
+        Pessoa pessoaParaAtualizar = new Pessoa(pessoaSalva.getId(), "Pessoa Atualizada", 41, "atualizado@email.com", "33344455567");
+        Pessoa pessoaAtualizada = repository.update(pessoaParaAtualizar);
 
         assertNotNull(pessoaAtualizada);
         assertEquals("Pessoa Atualizada", pessoaAtualizada.getNome());
@@ -90,7 +92,7 @@ public class PessoaRepositoryTest {
     @Test
     @DisplayName("Deve deletar uma pessoa pelo ID")
     void deveDeletarPessoa() {
-        repository.save("Pessoa a Deletar", 50, "deletar@email.com", "44455566677");
+        repository.save(new Pessoa(0, "Pessoa a Deletar", 50, "deletar@email.com", "44455566677"));
         boolean deletado = repository.deleteById(1);
 
         assertTrue(deletado);
